@@ -8,7 +8,7 @@ fuzzpass() {
 			sed -E 's,(.*)\.password-store/(.*)\.gpg,\2,' | \
 			fzf +m
 		)
-		[[ -z ${path} ]] && continue
+		[[ -z ${path} ]] && return
 		if [[ ${path} =~ otp-key ]]; then
 			local pin
 			pin=$(oathtool --base32 --totp "$(pass "${path}")")
