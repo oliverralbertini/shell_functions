@@ -55,7 +55,7 @@ set_badge_and_abduce() {
 	desired_command=("$@")
 	# set Iterm badge
 	printf "\e]1337;SetBadgeFormat=%s\a" "$(echo -n "${desired_session}" | base64)"
-	abduco -A "${desired_session}" "${desired_command[@]}"
+	DVTM_EDITOR=vis ABDUCO_LABEL=${desired_command} abduco -A "${desired_session}" "${desired_command[@]}"
 	printf "\e]1337;SetBadgeFormat=%s\a" ''
 }
 
