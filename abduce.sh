@@ -3,21 +3,25 @@
 # ABDUCO
 export ABDUCO_CMD='dvtm'
 abduce() {
-	local session create='create a new session' kill='kill a session'
+	local session create='create a new session' kill='kill a session' refresh='refresh list of sessions'
 
 	while true; do
+		set_badge_and_title abduce
 		session=$(
 				{
 					get_abduco_sessions
-					printf -- '%s\n%s' "$(tput sitm)$(tput setaf 2)${create}" "$(tput setaf 1)${kill}"
+					printf -- '%s\n%s\n%s' "$(tput sitm)$(tput setaf 2)${create}" "$(tput setaf 1)${kill}" "$(tput setaf 3)${refresh}"
 				} | \
 					fzf +m --border \
 						--prompt='choose a valid session (^D to quit): ' \
-						"--history=${HOME}/.abduce/history" --ansi
+						--ansi
 		)
 		# [[ -z ${session} ]] && continue
 		[[ -z ${session} ]] && return 1 # user entered ^D or EOF
 		case $session in
+			"${refresh}")
+				continue
+				;;
 			"${create}")
 				echo "provide name and command (default is ${ABDUCO_CMD}):"
 				local desired_session_and_command
@@ -28,8 +32,7 @@ abduce() {
 				session_to_kill=$(
 					get_abduco_sessions | \
 						fzf +m --border \
-							--prompt='choose abduco session to kill (^D to cancel): ' \
-							"--history=${HOME}/.abduce/kill_history"
+							--prompt='choose abduco session to kill (^D to cancel): '
 				)
 				[[ -z ${session_to_kill} ]] && continue # user entered ^D or EOF
 				local pids
@@ -53,9 +56,14 @@ set_badge_and_abduce() {
 	[[ -z ${desired_session} ]] && return 1
 	shift
 	desired_command=("$@")
-	# set Iterm badge
-	printf "\e]1337;SetBadgeFormat=%s\a" "$(echo -n "${desired_session}" | base64)"
-	DVTM_EDITOR=vis ABDUCO_LABEL=${desired_command} abduco -A "${desired_session}" "${desired_command[@]}"
-	printf "\e]1337;SetBadgeFormat=%s\a" ''
+	set_badge_and_title "${desired_session}"
+	DVTM_EDITOR=vim ABDUCO_LABEL=${desired_command} abduco -A "${desired_session}" "${desired_command[@]}"
 }
 
+set_badge_and_title() {
+	local title=${1}
+	# set Iterm badge
+	printf "\e]1337;SetBadgeFormat=%s\a" "$(echo -n "${title}" | base64)"
+	# set xterm title
+	printf '\033]0;%s\007' "${title}"
+}
