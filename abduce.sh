@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # ABDUCO
-export ABDUCO_CMD='dvtm'
+export ABDUCO_CMD='tmux'
 abduce() {
 	local session create='create a new session' kill='kill a session' refresh='refresh list of sessions'
 
@@ -57,7 +57,7 @@ set_badge_and_abduce() {
 	shift
 	desired_command=("$@")
 	set_badge_and_title "${desired_session}"
-	DVTM_EDITOR=vim ABDUCO_LABEL=${desired_command} abduco -A "${desired_session}" "${desired_command[@]}"
+	DVTM_EDITOR=vim abduco -A "${desired_session}" "${desired_command[@]}"
 }
 
 set_badge_and_title() {
