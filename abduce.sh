@@ -66,4 +66,6 @@ set_badge_and_title() {
 	printf "\e]1337;SetBadgeFormat=%s\a" "$(echo -n "${title}" | base64)"
 	# set xterm title
 	printf '\033]0;%s\007' "${title}"
+	# turn off focus-reporting
+	printf '\e[?1004l'
 }
