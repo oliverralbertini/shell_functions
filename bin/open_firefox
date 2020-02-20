@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+
+set -e
+
+container=${1:?Please provide a Firefox container name}
+url=${2:?Please provide a URL}
+
+. ~/workspace/shell_functions/open_firefox.sh && open_firefox "$container" "$url"
