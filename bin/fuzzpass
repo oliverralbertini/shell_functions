@@ -1,0 +1,2 @@
+#!/usr/bin/env bash
+. ~/workspace/shell_functions/fuzzpass.sh && fuzzpass
