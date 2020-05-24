@@ -31,6 +31,7 @@ yt_dl_audio () {
 	echo "Querying yt for the query '$*'..."
 	payload=$(youtube-dl -4j "ytsearch${count}:$*" -o "${format}")
 	mapfile -t choices < <(jq -r .fulltitle <<< "$payload" | fzf -m --border --prompt='choose a title to download')
+	local pids=()
 	for choice in "${choices[@]}"; do
 		youtube-dl \
 			-f bestaudio \
@@ -40,9 +41,10 @@ yt_dl_audio () {
 			--audio-format mp3 \
 			"$(jq -r --arg choice "$choice" 'select(.fulltitle == $choice).webpage_url' <<< "${payload}")" \
 			>/dev/null 2>&1 &
+		pids+=( "$!" )
 	done
 
-	wait
+	wait "${pids[@]}"
 	# https://developer.apple.com/library/archive/releasenotes/InterapplicationCommunication/RN-JavaScriptForAutomation/Articles/OSX10-10.html#//apple_ref/doc/uid/TP40014508-CH109-SW1
 	# https://www.macstories.net/tutorials/getting-started-with-javascript-for-automation-on-yosemite/
 	osa_cmd="iTunes = Application('iTunes')
