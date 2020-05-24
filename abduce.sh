@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # ABDUCO
-export ABDUCO_CMD='tmux'
+export ABDUCO_CMD=tmux
 abduce() {
 	local session create='create a new session' kill='kill a session' refresh='refresh list of sessions'
 
