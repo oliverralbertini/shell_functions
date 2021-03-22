@@ -36,7 +36,7 @@ abduce() {
 				)
 				[[ -z ${session_to_kill} ]] && continue # user entered ^D or EOF
 				local pids
-				mapfile -t pids < <(pgrep -f "^abduco -[Aa] ${session_to_kill}.*$")
+				mapfile -t pids < <(pgrep -f "^abduco .* -[Aa] ${session_to_kill}.*$")
 				kill "${pids[@]}"
 				;;
 			*)
@@ -52,12 +52,12 @@ get_abduco_sessions() {
 }
 
 set_badge_and_abduce() {
-	local desired_session=$1 desired_command
+	local desired_session=$1 desired_command abduco_detach_key=${ABDUCO_DETACH_KEY:-\\}
 	[[ -z ${desired_session} ]] && return 1
 	shift
 	desired_command=("$@")
 	set_badge_and_title "${desired_session}"
-	DVTM_EDITOR=vim abduco -A "${desired_session}" "${desired_command[@]}"
+	DVTM_EDITOR=vim abduco -e "^${abduco_detach_key}" -A "${desired_session}" "${desired_command[@]}"
 }
 
 set_badge_and_title() {
